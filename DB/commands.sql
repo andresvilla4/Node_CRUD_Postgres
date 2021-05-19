@@ -4,7 +4,7 @@ create database usuarios_registrados; // crear base de datos
 
 // Crea una tabla en la DB
 create table usuarios(
-        nombre text,
+        nombre text unique,
         contraseña text
 );
 
@@ -20,7 +20,7 @@ select * from usuarios;
 
 create table libros(
         autor text,
-        titulo text
+        titulo text unique
 );
 
 insert into libros values

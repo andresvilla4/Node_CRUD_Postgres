@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const express = require('express');
+const bcrypt = require('bcrypt');
 const app = express();
 
 const config = {
@@ -30,7 +31,7 @@ app.get('/usuarios', async(req, res) => {
 app.post('/usuarios', async(req, res) => {
     try {
         let usuario = req.body.usuario;
-        let contraseña = req.body.contraseña;
+        let contraseña = bcrypt.hashSync(req.body.contraseña, 10);
         const text = `insert into usuarios values ('${usuario}', '${contraseña}')`;
         const resp = await pool.query(text);
         res.json({
@@ -38,7 +39,9 @@ app.post('/usuarios', async(req, res) => {
             })
             //pool.end();
     } catch (error) {
-        console.log(error);
+        res.json({
+            ok: false
+        })
     }
 });
 
@@ -46,7 +49,7 @@ app.post('/usuarios', async(req, res) => {
 app.put('/usuarios/:usuario', async(req, res) => {
     try {
         const usuario_nuevo = req.body.usuario;
-        const contraseña_nueva = req.body.contraseña;
+        const contraseña_nueva = bcrypt.hashSync(req.body.contraseña, 10);
         const usuario_viejo = req.params.usuario;
         const text = `update usuarios set nombre = '${usuario_nuevo}', contraseña = '${contraseña_nueva}' where nombre = '${usuario_viejo}'`;
         const resp = await pool.query(text);
@@ -55,7 +58,9 @@ app.put('/usuarios/:usuario', async(req, res) => {
         });
         //pool.end();
     } catch (error) {
-        console.log(error);
+        res.json({
+            ok: false
+        })
     }
 });
 
